@@ -98,6 +98,21 @@ class TypeCheckerTest(CheckerTestCase):
         with self.assertNoMessages():
             self.checker.visit_attribute(node)
 
+    @set_config(ignored_classes=('.*Things', ))
+    def test_ignored_class_regex_modules(self):
+        node = astroid.parse('''
+        class SomeThings():
+            def __init__(self):
+                self.a = 2
+
+            def blop(self):
+                self.something() + self.toto
+
+        SomeThings().blop()
+        ''')
+        with self.assertNoMessages():
+            self.walk(node.root())
+
     @set_config(contextmanager_decorators=('contextlib.contextmanager',
                                            '.custom_contextmanager'))
     def test_custom_context_manager(self):
