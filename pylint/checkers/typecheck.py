@@ -86,7 +86,16 @@ def _is_owner_ignored(owner, name, ignored_classes, ignored_modules):
         qname = owner.qname()
     else:
         qname = ''
-    return any(name == ignore or qname == ignore for ignore in ignored_classes)
+
+    for cls in ignored_classes:
+        if qname == cls:
+            print("Equal: {} == {}".format(qname, cls))
+            return True
+        if re.search(cls, qname):
+            print("REGEXP {} match {}".format(qname, cls))
+            return True
+
+    return False
 
 
 MSGS = {
